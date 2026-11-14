@@ -28,106 +28,253 @@
 //   track.style.animationDirection = 'reverse';
 // });
 
-document.addEventListener("DOMContentLoaded", function() {
-    const carouselSlider = document.querySelector('.carousel_slider');
-    const carouselTrack = document.querySelector('.carousel_track');
-    let isDragging = false;
-    let startX, currentX;
-    let animationId;
-    let speed = 0.7; // Adjust speed as needed
-    let isPaused = false;
+// document.addEventListener("DOMContentLoaded", function() {
+//     const carouselSlider = document.querySelector('.carousel_slider');
+//     const carouselTrack = document.querySelector('.carousel_track');
+//     let isDragging = false;
+//     let startX, currentX;
+//     let animationId;
+//     let speed = 0.7; // Adjust speed as needed
+//     let isPaused = false;
 
-    function startDrag(e) {
-        isDragging = true;
-        startX = e.pageX || e.touches[0].pageX;
-        currentX = startX;
-        cancelAnimationFrame(animationId);
-        carouselSlider.classList.add('disable-select');
+//     function startDrag(e) {
+//         isDragging = true;
+//         startX = e.pageX || e.touches[0].pageX;
+//         currentX = startX;
+//         cancelAnimationFrame(animationId);
+//         carouselSlider.classList.add('disable-select');
 
-        // Attach move and end listeners
-        document.addEventListener('mousemove', moveDrag);
-        document.addEventListener('touchmove', moveDrag);
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
+//         // Attach move and end listeners
+//         document.addEventListener('mousemove', moveDrag);
+//         document.addEventListener('touchmove', moveDrag);
+//         document.addEventListener('mouseup', endDrag);
+//         document.addEventListener('touchend', endDrag);
+//     }
+
+//     function endDrag() {
+//         isDragging = false;
+//         carouselSlider.classList.remove('disable-select');
+
+//         // Remove move and end listeners
+//         document.removeEventListener('mousemove', moveDrag);
+//         document.removeEventListener('touchmove', moveDrag);
+//         document.removeEventListener('mouseup', endDrag);
+//         document.removeEventListener('touchend', endDrag);
+
+//         if (!isPaused) {
+//             requestAnimationFrame(animate);
+//         }
+//     }
+
+//     function moveDrag(e) {
+//         if (!isDragging) return;
+//         const newX = e.pageX || e.touches[0].pageX;
+//         const diffX = newX - currentX;
+//         currentX = newX;
+
+//         carouselTrack.style.transform = `translateX(${parseFloat(carouselTrack.style.transform.replace('translateX(', '').replace('px)', '')) + diffX}px)`;
+//         handleInfiniteScroll();
+//     }
+
+//     function handleInfiniteScroll() {
+//         const trackRect = carouselTrack.getBoundingClientRect();
+//         const trackWidth = trackRect.width;
+//         let currentTranslateX = parseFloat(carouselTrack.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+
+//         if (currentTranslateX < -trackWidth / 2) {
+//             currentTranslateX += trackWidth;
+//         } else if (currentTranslateX > 0) {
+//             currentTranslateX -= trackWidth / 2;
+//         }
+
+//         carouselTrack.style.transform = `translateX(${currentTranslateX}px)`;
+//     }
+
+//     function animate() {
+//         if (isPaused || isDragging) return;
+
+//         let currentTranslateX = parseFloat(carouselTrack.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+//         currentTranslateX += speed;
+
+//         carouselTrack.style.transform = `translateX(${currentTranslateX}px)`;
+//         handleInfiniteScroll();
+
+//         animationId = requestAnimationFrame(animate);
+//     }
+
+//     // Prevent images from interfering with dragging
+//     const images = document.querySelectorAll('.carousel_slide');
+//     images.forEach(image => {
+//         image.addEventListener('dragstart', function(e) {
+//             e.preventDefault();
+//         });
+
+//         image.addEventListener('mouseenter', function() {
+//             isPaused = true;
+//             cancelAnimationFrame(animationId);
+//         });
+
+//         image.addEventListener('mouseleave', function() {
+//             isPaused = false;
+//             if (!isDragging) {
+//                 requestAnimationFrame(animate);
+//             }
+//         });
+//     });
+
+//     carouselSlider.addEventListener('mousedown', startDrag);
+//     carouselSlider.addEventListener('touchstart', startDrag);
+
+//     // Start the animation
+//     requestAnimationFrame(animate);
+// });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   const viewportNode = document.querySelector('.embla__viewport')
+
+//   if (!viewportNode) {
+//     console.error('Embla viewport not found!')
+//     return
+//   }
+
+//   // ინიციალიზაცია გლობალური ობიექტებით
+//   const emblaApi = EmblaCarousel(
+//     viewportNode, 
+//     { 
+//       loop: true,
+//       align: 'start',
+//       dragFree: true,
+//       // containScroll: false,
+//     }, 
+//     [
+//       EmblaCarouselAutoScroll({
+//         speed: 2,
+//         startDelay: 0,
+//         stopOnInteraction: false,
+//         stopOnMouseEnter: true
+//       })
+//     ]
+//   )
+// })
+
+// დრაგისას ერთი მიმართულება (კლასიკური)
+// document.addEventListener('DOMContentLoaded', () => {
+//   const viewportNode = document.querySelector('.embla__viewport')
+
+//   if (!viewportNode) {
+//     console.error('Embla viewport not found!')
+//     return
+//   }
+
+//   // ვქმნით AutoScroll პლაგინს ისე, რომ stopOnMouseEnter იყოს false
+//   const autoScroll = EmblaCarouselAutoScroll({
+//     speed: 1,
+//     startDelay: 0,
+//     stopOnInteraction: false,
+//     stopOnMouseEnter: false // ვთიშავთ სტანდარტულ ქცევას
+//   })
+
+//   // ინიციალიზაცია
+//   const emblaApi = EmblaCarousel(
+//     viewportNode, 
+//     { 
+//       loop: true,
+//       align: 'start',
+//       dragFree: true
+//     }, 
+//     [autoScroll]
+//   )
+
+//   // ვპოულობთ ყველა სურათს კარუსელში
+//   const images = viewportNode.querySelectorAll('.embla__slide img')
+
+//   images.forEach(img => {
+//     // როცა მაუსი მიდის სურათზე - ჩერდება
+//     img.addEventListener('mouseenter', () => {
+//       const autoScrollPlugin = emblaApi.plugins().autoScroll
+//       if (autoScrollPlugin) autoScrollPlugin.stop()
+//     })
+
+//     // როცა მაუსი გადის სურათიდან - აგრძელებს მოძრაობას
+//     img.addEventListener('mouseleave', () => {
+//       const autoScrollPlugin = emblaApi.plugins().autoScroll
+//       if (autoScrollPlugin) autoScrollPlugin.play()
+//     })
+//   })
+// })
+
+
+// დრაგისას სხვადასხვა მიმართულება
+document.addEventListener('DOMContentLoaded', () => {
+  const viewportNode = document.querySelector('.embla__viewport')
+
+  if (!viewportNode) {
+    console.error('Embla viewport not found!')
+    return
+  }
+
+  const SPEED = 1        // მაქსიმალური სიჩქარე (პიქსელი კადრში)
+  const SMOOTHING = 0.05 // რაც ნაკლებია, მით უფრო რბილია გადასვლა
+
+  // სურათის სიმბოლოები: -1 = მარჯვნიდან მარცხნივ, 1 = მარცხნიდან მარჯვნივ
+  let direction = -1
+  let currentSpeed = 0   // რეალური მიმდინარე სიჩქარე (ნიშნითურთ)
+  let isPaused = false
+  let isDragging = false
+
+  const emblaApi = EmblaCarousel(viewportNode, {
+    loop: true,
+    align: 'start',
+    dragFree: true
+  })
+
+  // --- ავტოსქროლის ციკლი ---
+  const tick = () => {
+    const targetSpeed = isPaused || isDragging ? 0 : SPEED * direction
+    currentSpeed += (targetSpeed - currentSpeed) * SMOOTHING
+
+    if (Math.abs(currentSpeed) > 0.01) {
+      emblaApi.internalEngine().scrollTo.distance(currentSpeed, false)
     }
 
-    function endDrag() {
-        isDragging = false;
-        carouselSlider.classList.remove('disable-select');
+    requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
 
-        // Remove move and end listeners
-        document.removeEventListener('mousemove', moveDrag);
-        document.removeEventListener('touchmove', moveDrag);
-        document.removeEventListener('mouseup', endDrag);
-        document.removeEventListener('touchend', endDrag);
+  // --- დრაგის მიმართულების დადგენა ---
+  let startX = null
 
-        if (!isPaused) {
-            requestAnimationFrame(animate);
-        }
-    }
+  viewportNode.addEventListener('pointerdown', (e) => {
+    startX = e.clientX
+    isDragging = true
+  })
 
-    function moveDrag(e) {
-        if (!isDragging) return;
-        const newX = e.pageX || e.touches[0].pageX;
-        const diffX = newX - currentX;
-        currentX = newX;
+  window.addEventListener('pointerup', (e) => {
+    isDragging = false
+    if (startX === null) return
 
-        carouselTrack.style.transform = `translateX(${parseFloat(carouselTrack.style.transform.replace('translateX(', '').replace('px)', '')) + diffX}px)`;
-        handleInfiniteScroll();
-    }
+    const dx = e.clientX - startX
+    startX = null
 
-    function handleInfiniteScroll() {
-        const trackRect = carouselTrack.getBoundingClientRect();
-        const trackWidth = trackRect.width;
-        let currentTranslateX = parseFloat(carouselTrack.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+    // ძალიან მცირე გადაწევა (უბრალო კლიკი) - იგნორირება
+    if (Math.abs(dx) < 10) return
 
-        if (currentTranslateX < -trackWidth / 2) {
-            currentTranslateX += trackWidth;
-        } else if (currentTranslateX > 0) {
-            currentTranslateX -= trackWidth / 2;
-        }
+    // dx > 0: გადავწიე მარცხნიდან მარჯვნივ -> მიდის მარჯვნივ
+    // dx < 0: გადავწიე მარჯვნიდან მარცხნივ -> მიდის მარცხნივ
+    direction = dx > 0 ? 1 : -1
+  })
 
-        carouselTrack.style.transform = `translateX(${currentTranslateX}px)`;
-    }
+  // --- მაუსის ჰოვერზე შეჩერება ---
+  const images = viewportNode.querySelectorAll('.embla__slide img')
 
-    function animate() {
-        if (isPaused || isDragging) return;
+  images.forEach((img) => {
+    img.addEventListener('mouseenter', () => (isPaused = true))
+    img.addEventListener('mouseleave', () => (isPaused = false))
+  })
+})
 
-        let currentTranslateX = parseFloat(carouselTrack.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
-        currentTranslateX += speed;
 
-        carouselTrack.style.transform = `translateX(${currentTranslateX}px)`;
-        handleInfiniteScroll();
 
-        animationId = requestAnimationFrame(animate);
-    }
-
-    // Prevent images from interfering with dragging
-    const images = document.querySelectorAll('.carousel_slide');
-    images.forEach(image => {
-        image.addEventListener('dragstart', function(e) {
-            e.preventDefault();
-        });
-
-        image.addEventListener('mouseenter', function() {
-            isPaused = true;
-            cancelAnimationFrame(animationId);
-        });
-
-        image.addEventListener('mouseleave', function() {
-            isPaused = false;
-            if (!isDragging) {
-                requestAnimationFrame(animate);
-            }
-        });
-    });
-
-    carouselSlider.addEventListener('mousedown', startDrag);
-    carouselSlider.addEventListener('touchstart', startDrag);
-
-    // Start the animation
-    requestAnimationFrame(animate);
-});
 
 
 
