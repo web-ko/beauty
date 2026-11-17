@@ -157,7 +157,8 @@
 //   )
 // })
 
-// დრაგისას ერთი მიმართულება (კლასიკური)
+
+// embla კარუსელი დრაგისას ერთი მიმართულება (კლასიკური)
 // document.addEventListener('DOMContentLoaded', () => {
 //   const viewportNode = document.querySelector('.embla__viewport')
 
@@ -204,7 +205,131 @@
 // })
 
 
-// დრაგისას სხვადასხვა მიმართულება
+// embla კარუსელი  დრაგისას ერთი მიმართულება, ზუსტი? (კლასიკური)
+// document.addEventListener('DOMContentLoaded', () => {
+//   const viewportNode = document.querySelector('.embla__viewport');
+
+//   if (!viewportNode) {
+//     console.error('Embla viewport not found!');
+//     return;
+//   }
+
+//   // --- პარამეტრები ---
+//   const SPEED = 1;
+//   const SMOOTHING = 0.05;
+//   const RESUME_DELAY = 500;
+
+//   // --- მდგომარეობები ---
+//   let direction = -1;
+//   let currentSpeed = 0;
+//   let isPaused = false;
+//   let isDragging = false;
+//   let resumeAt = 0;
+//   let animationFrame;
+
+//   // --- Embla ---
+//   const emblaApi = EmblaCarousel(viewportNode, {
+//     loop: true,
+//     align: 'start',
+//     dragFree: true,
+//     skipSnaps: true,
+//     watchDrag: true
+//   });
+
+//   // --- ავტოსქროლის შეჩერება ---
+//   const holdAutoScroll = () => {
+//     currentSpeed = 0;
+//     resumeAt = performance.now() + RESUME_DELAY;
+//   };
+
+//   // --- Embla Drag Events ---
+//   emblaApi.on('pointerDown', () => {
+//     isDragging = true;
+//     currentSpeed = 0;
+//     holdAutoScroll();
+//   });
+
+//   emblaApi.on('pointerUp', () => {
+//     isDragging = false;
+//     currentSpeed = 0;
+//     holdAutoScroll();
+//   });
+
+//   // --- ავტოსქროლის ციკლი ---
+//   const tick = () => {
+//     animationFrame = requestAnimationFrame(tick);
+
+//     if (isDragging || isPaused) {
+//       currentSpeed = 0;
+//       return;
+//     }
+
+//     const now = performance.now();
+
+//     if (now < resumeAt) {
+//       currentSpeed = 0;
+//       return;
+//     }
+
+//     try {
+//       const engine = emblaApi.internalEngine();
+
+//       // არ ჩავერიოთ Embla-ს ინერციულ მოძრაობაში
+//       if (Math.abs(engine.scrollBody.velocity()) > SPEED * 2) {
+//         currentSpeed = 0;
+//         return;
+//       }
+
+//       const targetSpeed = isPaused ? 0 : SPEED * direction;
+
+//       currentSpeed +=
+//         (targetSpeed - currentSpeed) * SMOOTHING;
+
+//       if (Math.abs(currentSpeed) > 0.01) {
+//         engine.scrollTo.distance(currentSpeed, false);
+//       }
+
+//     } catch (err) {
+//       console.warn('Autoscroll error:', err);
+//     }
+//   };
+
+//   animationFrame = requestAnimationFrame(tick);
+
+//   // --- მაუსის Hover ---
+//   const images = viewportNode.querySelectorAll('.embla__slide img');
+
+//   images.forEach((img) => {
+//     img.addEventListener('pointerenter', (e) => {
+//       if (e.pointerType === 'mouse') {
+//         isPaused = true;
+//       }
+//     });
+
+//     img.addEventListener('pointerleave', (e) => {
+//       if (e.pointerType === 'mouse') {
+//         isPaused = false;
+//       }
+//     });
+
+//     img.setAttribute('draggable', 'false');
+//   });
+
+//   // --- ტაბის შეცვლა / ფანჯრის დაკარგვა ---
+//   window.addEventListener('blur', () => {
+//     isDragging = false;
+//     holdAutoScroll();
+//   });
+
+//   // --- რესურსების გათავისუფლება ---
+//   window.addEventListener('pagehide', () => {
+//     cancelAnimationFrame(animationFrame);
+//     emblaApi.destroy();
+//   }, { once: true });
+// });
+
+
+// embla კარუსელი დრაგისას სხვადასხვა მიმართულება
 document.addEventListener('DOMContentLoaded', () => {
   const viewportNode = document.querySelector('.embla__viewport')
 
@@ -213,65 +338,105 @@ document.addEventListener('DOMContentLoaded', () => {
     return
   }
 
-  const SPEED = 1        // მაქსიმალური სიჩქარე (პიქსელი კადრში)
-  const SMOOTHING = 0.05 // რაც ნაკლებია, მით უფრო რბილია გადასვლა
+  const SPEED = 1
+  const SMOOTHING = 0.05
+  const RESUME_DELAY = 400  // ოდნავ გავზარდოთ, რომ თითის აღებისას მყისიერად არ აღდგეს ავტოსქროლი
 
-  // სურათის სიმბოლოები: -1 = მარჯვნიდან მარცხნივ, 1 = მარცხნიდან მარჯვნივ
   let direction = -1
-  let currentSpeed = 0   // რეალური მიმდინარე სიჩქარე (ნიშნითურთ)
+  let currentSpeed = 0
   let isPaused = false
-  let isDragging = false
+  let resumeAt = 0
+  let isDragging = false   // ძირითადი ფლაგი დრაგის კონტროლისთვის
 
   const emblaApi = EmblaCarousel(viewportNode, {
     loop: true,
     align: 'start',
-    dragFree: true
+    dragFree: true,
+    skipSnaps: true
   })
+
+  const holdAutoScroll = () => {
+    currentSpeed = 0
+    resumeAt = performance.now() + RESUME_DELAY
+  }
 
   // --- ავტოსქროლის ციკლი ---
   const tick = () => {
-    const targetSpeed = isPaused || isDragging ? 0 : SPEED * direction
-    currentSpeed += (targetSpeed - currentSpeed) * SMOOTHING
-
-    if (Math.abs(currentSpeed) > 0.01) {
-      emblaApi.internalEngine().scrollTo.distance(currentSpeed, false)
-    }
-
     requestAnimationFrame(tick)
+
+    try {
+      const now = performance.now()
+
+      // თუ მომხმარებელი ქაჩავს სლაიდერს, ავტოსქროლი სრულად გაჩერებულია
+      if (isDragging || now < resumeAt) {
+        currentSpeed = 0
+        return
+      }
+
+      const engine = emblaApi.internalEngine()
+
+      if (Math.abs(engine.scrollBody.velocity()) > SPEED * 2) return
+
+      const targetSpeed = isPaused ? 0 : SPEED * direction
+      currentSpeed += (targetSpeed - currentSpeed) * SMOOTHING
+
+      if (Math.abs(currentSpeed) > 0.01) {
+        engine.scrollTo.distance(currentSpeed, false)
+      }
+    } catch (err) {
+      console.warn('autoscroll tick error:', err)
+    }
   }
   requestAnimationFrame(tick)
 
-  // --- დრაგის მიმართულების დადგენა ---
-  let startX = null
+  // --- ოპტიმიზებული პოინტერ ჰენდლერები ---
+  let startX = 0
 
   viewportNode.addEventListener('pointerdown', (e) => {
-    startX = e.clientX
     isDragging = true
+    startX = e.clientX
+    holdAutoScroll()
   })
 
-  window.addEventListener('pointerup', (e) => {
-    isDragging = false
-    if (startX === null) return
-
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return
+    // ვამოწმებთ ჰორიზონტალურ გადაადგილებას
     const dx = e.clientX - startX
-    startX = null
+    if (Math.abs(dx) > 5) {
+      direction = dx > 0 ? 1 : -1
+    }
+  }, { passive: true })
 
-    // ძალიან მცირე გადაწევა (უბრალო კლიკი) - იგნორირება
-    if (Math.abs(dx) < 10) return
+  const handlePointerEnd = () => {
+    if (!isDragging) return
+    isDragging = false
+    holdAutoScroll()
+  }
 
-    // dx > 0: გადავწიე მარცხნიდან მარჯვნივ -> მიდის მარჯვნივ
-    // dx < 0: გადავწიე მარჯვნიდან მარცხნივ -> მიდის მარცხნივ
-    direction = dx > 0 ? 1 : -1
+  window.addEventListener('pointerup', handlePointerEnd)
+  window.addEventListener('pointercancel', handlePointerEnd)
+
+  // ტაბის შეცვლისას
+  window.addEventListener('blur', () => {
+    isDragging = false
+    holdAutoScroll()
   })
 
-  // --- მაუსის ჰოვერზე შეჩერება ---
+  // --- მაუსის ჰოვერი ---
   const images = viewportNode.querySelectorAll('.embla__slide img')
-
   images.forEach((img) => {
-    img.addEventListener('mouseenter', () => (isPaused = true))
-    img.addEventListener('mouseleave', () => (isPaused = false))
+    img.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'mouse') isPaused = true
+    })
+    img.addEventListener('pointerleave', (e) => {
+      if (e.pointerType === 'mouse') isPaused = false
+    })
+    img.setAttribute('draggable', 'false')
   })
 })
+
+
+
 
 
 
