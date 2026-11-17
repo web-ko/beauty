@@ -15,7 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/all.css">
 	<link rel="stylesheet" type="text/css" href="css/fonts.css">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css?v=20261117">
 </head>
 <body>
 	<div id="overlay1" class="overlay1"></div>
@@ -29,18 +29,6 @@
 			</div>
 			<ul id="buyItems">
 				<h4 class="empty mt-4">Your bag is empty.</h4>
-				<!-- <li class="buyItem">
-					<img src="img/">
-					<div>
-						<h5>Products Name</h5>
-						<h6>12.50 &#8382;</h6>
-						<div>
-							<button>-</button>
-							<span class="countOfProduct"></span>
-							<button>+</button>
-						</div>
-					</div>
-				</li> -->
 	        </ul>
 	        <h6 class="mt-4 sum-price" id="sum-prices"></h6> <!-- როცა მინდა cart-ში გამოჩნდეს total (თანხის ჯამი). თუ არა, მაშინ ამ tag-ს ვაუქმებ. იხ. js -->
 			<div class="mt-5 shop-onl">
@@ -153,44 +141,6 @@
 						</svg>
 					</a>
 				</nav>
-				<!-- <nav class="social-toggler togglerlangswitcher togglerlang d-flex align-items-end">
-					<a class="bag-sign-a1" href="login.html" title="Account">
-						<svg class="account-sign" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 25.4 23.7" xml:space="preserve">
-							<style type="text/css">
-								.st0{fill:none;stroke:#000000;stroke-miterlimit:10;}
-							</style>
-							<g>
-								<path class="st0" d="M12.7,12C1,12,0.5,23.2,0.5,23.2h24.3C24.8,23.2,24.4,12,12.7,12z"/>
-								<line class="st0" x1="12.7" y1="12" x2="12.7" y2="9.4"/>
-								<circle class="st0" cx="12.7" cy="5" r="4.5"/>
-							</g>
-						</svg>
-					</a>
-					<a href="#;" class="bag-sign-a11 shoppingCartButton1" title="Shopping Bag">
-						<svg class="bag-sign" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 62.1 55.6" xml:space="preserve">
-							<style type="text/css">
-								.st0{fill:none;stroke:#000000;stroke-width:0.75;stroke-miterlimit:10;}
-							</style>
-							<g>
-								<polygon class="st0" points="53.7,55.1 8.3,55.1 0.6,21 61.4,21 	"/>
-								<line class="st0" x1="17.7" y1="28.2" x2="17.7" y2="14"/>
-								<line class="st0" x1="44.7" y1="28.2" x2="44.7" y2="14"/>
-								<path class="st0" d="M17.7,14c0-7.5,6-13.5,13.5-13.5c7.4,0,13.5,6,13.5,13.5"/>
-							</g>
-						</svg>
-					</a>
-					<div class="dropdown lang-switcher">
-						<a class="lang-sign1" href="javascript:void(0)" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"><h6>EN</h6></a>
-						<ul class="dropdown-menu lang-switcher-menu" aria-labelledby="dropdownMenuLink">
-		    				<li><a href="javascript:void(0)" class="dropdown-item">GEO</a></li>
-		    				<li><a href="javascript:void(0)" class="dropdown-item">UKR</a></li>
-		    				<li><a href="javascript:void(0)" class="dropdown-item">FR</a></li>
-		    				<li><a href="javascript:void(0)" class="dropdown-item">IT</a></li>
-		    				<li><a href="javascript:void(0)" class="dropdown-item">SP</a></li>
-		    				<li><a href="javascript:void(0)" class="dropdown-item">TU</a></li>
-		    			</ul>
-	    			</div>
-				</nav> -->
 		    	<nav class="social-toggler langswitcher ms-auto d-flex align-items-end">
 					<a class="search-sign-a" href="#;" title="Search">
 						<svg class="search-sign" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 15.8" xml:space="preserve">
@@ -246,7 +196,7 @@
 						<div class="container container-width">
 							<div class="row justify-content-center">
 								<div class="col-12 col-sm-12 col-md-6 col-lg-6 overlay-col mt-4 position-relative">
-									<input class="form-control search-item" type="search" placeholder="Search" name="search">
+									<input class="form-control search-item input_text" type="search" placeholder="Search" name="search">
 									<svg class="search-sign-input" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 15.8" xml:space="preserve">
 										<style type="text/css"> .st0{fill:none;stroke:#000000;stroke-width:0.75;stroke-miterlimit:10;}
 										</style>
@@ -255,6 +205,7 @@
 											<line class="st0" x1="15.7" y1="15.5" x2="11.7" y2="11.5"></line>
 										</g>
 									</svg>
+									<p id="searchresults"></p>
 								</div>
 							</div>
 						</div>
@@ -268,9 +219,6 @@
 							<rect y="14" class="st0-burg" width="17" height="2"/>
 						</g>
 					</svg>
-					<!-- <span class="toggler-icon top-bar"></span>
-					<span class="toggler-icon middle-bar"></span>
-					<span class="toggler-icon bottom-bar"></span> -->
 			    </button>
 			</div>
 		</nav>
@@ -312,7 +260,7 @@
 				        </div>
 	    			</li>
 	    			<li class="nav-item navigation-li px-1">
-	    				<a class="nav-link navigation-a" href="bodycare.html">Bodycare</a>
+	    				<a class="nav-link navigation-a" href="bodycare.html">Bodycare</a >
 	    			</li>
 		    		<li class="nav-item dropdown navigation-li px-1 menu-area gallery-li">
 		    			<button type="button" id="mega-one" class="btn nav-link navigation-a dropdowntoggle gallery-a">Skincare</button>
@@ -1085,6 +1033,7 @@
 	<script type="text/javascript" src="js/simpleParallax.min.js"></script>
 	<script type="text/javascript" src="js/add-to-cart.js"></script>
 	<script type="text/javascript" src="js/shopping-cart-countOfProduct.js"></script>
+	<script type="text/javascript" src="js/simplesearch.js"></script>
 	<script type="text/javascript" src="js/script.js"></script>
 
 
